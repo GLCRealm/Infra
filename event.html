@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Event Management — InfraEdge 360</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cobalt-1:#0d1fb8;
+    --cobalt-2:#1c34e8;
+    --cobalt-3:#2a45ff;
+    --ice:#eaf1ff;
+    --ice-dim:rgba(234,241,255,0.62);
+    --ice-faint:rgba(234,241,255,0.38);
+    --gold:#f8c635;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  html,body{
+    height:100%;
+    background:#f6f5f1;
+    color:#0b0e1a;
+    font-family:'Space Grotesk',sans-serif;
+    overflow-x:hidden;
+  }
+
+  a{ color:inherit; }
+
+  /* ============ NAV ============ */
+  nav{
+    position:absolute;
+    top:0;left:0;right:0;
+    z-index:10;
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:center;
+    padding:32px 56px;
+  }
+
+  .nav-item{
+    color:var(--ice-dim);
+    font-size:14px;
+    font-weight:600;
+    letter-spacing:0.01em;
+    text-decoration:none;
+    transition:color .25s ease;
+    display:inline-flex;
+    align-items:baseline;
+    gap:5px;
+    line-height:1;
+  }
+  .nav-item:hover{color:var(--ice);}
+  .nav-item.active{color:var(--ice);font-weight:700;}
+
+  .nav-mark{
+    width:26px;height:26px;
+    display:flex;align-items:center;justify-content:center;
+    justify-self:center;
+  }
+  .nav-mark svg{width:100%;height:100%;display:block;}
+
+  .nav-left{justify-self:start;display:flex;gap:36px;align-items:center;}
+  .nav-right{justify-self:end;display:flex;gap:36px;align-items:center;}
+
+  @media (max-width:720px){
+    nav{padding:22px 20px;}
+    .nav-left, .nav-right{gap:20px;}
+    .nav-item{font-size:12px;}
+  }
+
+  /* ============ HERO ============ */
+  .hero{
+    position:relative;
+    min-height:78vh;
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    overflow:hidden;
+    background:
+      radial-gradient(120% 90% at 8% 0%, var(--cobalt-3) 0%, var(--cobalt-2) 45%, var(--cobalt-1) 100%);
+    color:var(--ice);
+    padding:140px 56px 90px;
+  }
+
+  #streaks{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    z-index:1;
+    mix-blend-mode:overlay;
+    opacity:0.85;
+  }
+
+  .top-border{
+    position:absolute;
+    top:0;left:0;right:0;
+    height:3px;
+    background:#000;
+    z-index:5;
+  }
+
+  .hero-inner{
+    position:relative;
+    z-index:3;
+    max-width:1400px;
+    margin:0 auto;
+    width:100%;
+  }
+
+  .breadcrumb{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:13px;
+    font-weight:600;
+    letter-spacing:0.02em;
+    color:var(--ice-faint);
+    margin-bottom:28px;
+  }
+  .breadcrumb a{
+    color:var(--ice-dim);
+    text-decoration:none;
+    transition:color .2s ease;
+  }
+  .breadcrumb a:hover{ color:var(--ice); }
+
+  .swatch-mark{
+    display:inline-flex;
+    align-items:center;
+    gap:9px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;
+    font-weight:600;
+    letter-spacing:0.08em;
+    color:var(--gold);
+    text-transform:uppercase;
+    margin-bottom:22px;
+  }
+  .swatch-dots{
+    display:inline-flex;
+    gap:4px;
+  }
+  .swatch-dots span{
+    width:9px;height:9px;
+    border-radius:2px;
+    display:block;
+  }
+  .swatch-dots span:nth-child(1){ background:var(--gold); }
+  .swatch-dots span:nth-child(2){ background:#5a8bff; }
+  .swatch-dots span:nth-child(3){ background:#ff5a7a; }
+
+  .hero-title{
+    font-family:'Unbounded',sans-serif;
+    font-weight:800;
+    font-size:clamp(38px,6.4vw,88px);
+    line-height:0.98;
+    letter-spacing:-0.015em;
+    color:var(--ice);
+    max-width:900px;
+  }
+
+  .hero-title .outline{
+    -webkit-text-stroke:1.5px var(--ice);
+    color:transparent;
+  }
+
+  .hero-desc{
+    margin-top:26px;
+    max-width:620px;
+    font-size:clamp(15px,1.6vw,18px);
+    line-height:1.6;
+    color:var(--ice-dim);
+  }
+
+  .cta-row{
+    margin-top:38px;
+    display:flex;
+    gap:22px;
+    flex-wrap:wrap;
+  }
+
+  .btn{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:15px;
+    font-weight:700;
+    letter-spacing:0.02em;
+    text-decoration:none;
+    padding:17px 30px;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    border-radius:2px;
+    transition:transform .2s ease, box-shadow .2s ease, background .2s ease;
+  }
+
+  .btn-primary{
+    background:var(--gold);
+    color:#0d1fb8;
+    box-shadow:6px 6px 0 rgba(0,0,0,0.18);
+  }
+  .btn-primary:hover{
+    transform:translate(-2px,-2px);
+    box-shadow:8px 8px 0 rgba(0,0,0,0.22);
+  }
+  .btn-primary svg{width:16px;height:16px;}
+
+  .btn-outline{
+    background:transparent;
+    color:var(--ice);
+    border:1.5px solid rgba(234,241,255,0.75);
+  }
+  .btn-outline:hover{
+    background:rgba(234,241,255,0.08);
+    border-color:var(--ice);
+  }
+
+  .hero-stats{
+    margin-top:64px;
+    display:flex;
+    gap:0;
+    flex-wrap:wrap;
+  }
+  .stat{ padding:0 34px 0 0; margin-right:34px; text-align:left; }
+  .stat:not(:last-child){ border-right:1px solid rgba(234,241,255,0.25); }
+  .stat-num{
+    font-family:'Unbounded',sans-serif;
+    font-weight:800;
+    font-size:clamp(24px,3vw,36px);
+    line-height:1;
+    color:var(--ice);
+  }
+  .stat-label{
+    margin-top:6px;
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    color:var(--ice-faint);
+  }
+
+  @media (max-width:720px){
+    .hero{ padding:120px 24px 70px; }
+  }
+
+  /* ============ MARQUEE ============ */
+  .marquee{
+    position:relative;
+    width:100%;
+    background:#f6f5f1;
+    overflow:hidden;
+    padding:24px 0;
+    border-bottom:1px solid rgba(11,14,26,0.08);
+  }
+  .marquee-track{
+    display:flex;
+    width:max-content;
+    animation:marquee-scroll 24s linear infinite;
+  }
+  .marquee:hover .marquee-track{ animation-play-state:paused; }
+  .marquee-group{ display:flex; align-items:center; flex-shrink:0; }
+  .marquee-item{
+    display:flex;
+    align-items:center;
+    font-family:'Unbounded',sans-serif;
+    font-weight:700;
+    font-size:clamp(14px,1.6vw,18px);
+    letter-spacing:0.01em;
+    color:#0d1fb8;
+    white-space:nowrap;
+    padding:0 26px;
+    text-transform:uppercase;
+  }
+  .marquee-dot{
+    width:6px;height:6px;
+    border-radius:50%;
+    background:#0d1fb8;
+    margin-left:26px;
+    flex-shrink:0;
+  }
+  @keyframes marquee-scroll{
+    from{ transform:translateX(0); }
+    to{ transform:translateX(-50%); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .marquee-track{ animation:none; }
+  }
+
+  /* ============ SECTION SHARED ============ */
+  .eyebrow{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:0.14em;
+    color:#5a5f73;
+    margin-bottom:18px;
+    display:block;
+  }
+
+  section{ padding:100px 56px; }
+  .section-inner{ max-width:1400px; margin:0 auto; }
+
+  @media (max-width:720px){
+    section{ padding:70px 24px; }
+  }
+
+  /* ============ OVERVIEW ============ */
+  .overview{ background:#f6f5f1; }
+  .overview-grid{
+    display:grid;
+    grid-template-columns:0.8fr 1.2fr;
+    gap:56px;
+    align-items:start;
+  }
+  .overview-title{
+    font-family:'Unbounded',sans-serif;
+    font-weight:800;
+    font-size:clamp(30px,4.4vw,52px);
+    line-height:1.05;
+    letter-spacing:-0.01em;
+    text-transform:uppercase;
+    color:#0b0e1a;
+  }
+  .overview-title .outline{
+    -webkit-text-stroke:1.5px #0b0e1a;
+    color:transparent;
+  }
+  .overview-desc{
+    font-size:clamp(15px,1.5vw,17px);
+    line-height:1.75;
+    color:#3d4258;
+    max-width:640px;
+  }
+  .overview-desc + .overview-desc{ margin-top:18px; }
+
+  @media (max-width:900px){
+    .overview-grid{ grid-template-columns:1fr; gap:28px; }
+  }
+
+  /* ============ SERVICE DETAIL GRID ============ */
+  .offerings{ background:#05070f; color:var(--ice); }
+  .offerings .eyebrow{ color:var(--ice-faint); }
+
+  .offerings-head{
+    max-width:760px;
+    margin-bottom:56px;
+  }
+  .offerings-title{
+    font-family:'Unbounded',sans-serif;
+    font-weight:800;
+    font-size:clamp(32px,4.8vw,58px);
+    line-height:1.02;
+    letter-spacing:-0.01em;
+    text-transform:uppercase;
+    color:var(--ice);
+  }
+  .offerings-title .outline{
+    -webkit-text-stroke:1.5px var(--ice);
+    color:transparent;
+  }
+
+  .offerings-grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:1px;
+    background:rgba(234,241,255,0.14);
+    border:1px solid rgba(234,241,255,0.14);
+  }
+
+  .offering-item{
+    background:#05070f;
+    padding:36px 34px;
+    display:flex;
+    flex-direction:column;
+    transition:background .25s ease;
+  }
+  .offering-item:hover{ background:#0b1030; }
+
+  .offering-top{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:16px;
+    margin-bottom:16px;
+  }
+
+  .offering-swatch{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    font-weight:600;
+    color:#5a8bff;
+    flex-shrink:0;
+  }
+  .offering-swatch .dot{
+    width:9px;height:9px;
+    border-radius:2px;
+    display:block;
+  }
+
+  .offering-title{
+    font-family:'Unbounded',sans-serif;
+    font-weight:700;
+    font-size:19px;
+    line-height:1.25;
+    margin-bottom:12px;
+  }
+
+  .offering-desc{
+    font-size:14px;
+    line-height:1.65;
+    color:var(--ice-dim);
+    max-width:420px;
+  }
+
+  @media (max-width:900px){
+    .offerings-grid{ grid-template-columns:1fr; }
+  }
+
+  /* ============ PROCESS ============ */
+  .process{ background:#f6f5f1; }
+  .process-head{ max-width:1400px; margin:0 auto 56px; }
+  .process-title{
+    font-family:'Unbounded',sans-serif;
+    font-weight:800;
+    font-size:clamp(30px,4.6vw,54px);
+    line-height:1.05;
+    letter-spacing:-0.01em;
+    text-transform:uppercase;
+    color:#0b0e1a;
+  }
+  .process-title .outline{
+    -webkit-text-stroke:1.5px #0b0e1a;
+    color:transparent;
+  }
+
+  .process-grid{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:24px;
+  }
+
+  .process-card{
+    background:#fff;
+    border:2px solid #0b0e1a;
+    box-shadow:8px 8px 0 rgba(11,14,26,0.9);
+    padding:26px 24px 28px;
+    display:flex;
+    flex-direction:column;
+  }
+
+  .process-top{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:16px;
+  }
+
+  .process-num{
+    font-family:'JetBrains Mono',monospace;
+    font-weight:600;
+    font-size:14px;
+    letter-spacing:0.04em;
+    color:#0d1fb8;
+    flex-shrink:0;
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+  }
+  .process-num .dot{
+    width:9px;height:9px;
+    border-radius:2px;
+    display:block;
+  }
+
+  .process-line{ flex:1; height:1px; background:#c9cad1; }
+
+  .process-divider{ height:2px; background:#0b0e1a; margin-bottom:18px; }
+
+  .process-card-title{
+    font-family:'Unbounded',sans-serif;
+    font-weight:800;
+    font-size:19px;
+    letter-spacing:-0.005em;
+    text-transform:uppercase;
+    margin-bottom:12px;
+  }
+
+  .process-card-text{
+    font-size:14px;
+    line-height:1.6;
+    color:#3d4258;
+  }
+
+  @media (max-width:1080px){
+    .process-grid{ grid-template-columns:repeat(2, 1fr); gap:28px 24px; }
+  }
+  @media (max-width:640px){
+    .process-grid{ grid-template-columns:1fr; }
+  }
+
+  /* ============ PACKAGES ============ */
+  .packages{ background:#05070f; color:var(--ice); }
+  .packages .eyebrow{ color:var(--ice-faint); }
+
+  .packages-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:40px;
+    flex-wrap:wrap;
+    margin-bottom:56px;
+  }
+
+  .packages-title{
+    font-family:'Unbounded',sans-serif;
+    font-weight:800;
+    font-size:clamp(30px,4.6vw,54px);
+    line-height:1.02;
+    letter-spacing:-0.01em;
+    text-transform:uppercase;
+    color:var(--ice);
+  }
+  .packages-title .outline{
+    -webkit-text-stroke:1.5px var(--ice);
+    color:transparent;
+  }
+
+  .packages-sub{
+    font-size:clamp(14px,1.4vw,16px);
+    line-height:1.55;
+    color:var(--ice-dim);
+    max-width:360px;
+    padding-bottom:8px;
+  }
+
+  .packages-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:22px;
+  }
+
+  .package-card{
+    position:relative;
+    padding:32px 28px 30px;
+    display:flex;
+    flex-direction:column;
+    border-radius:14px;
+    overflow:hidden;
+  }
+
+  .package-card.tier-a{ background:#0c1c6e; color:#eaf1ff; }
+  .package-card.tier-b{ background:#1c34e8; color:#eaf1ff; }
+  .package-card.tier-c{ background:#05070f; color:#eaf1ff; border:1px solid rgba(234,241,255,0.14); }
+
+  .package-badge{
+    display:inline-flex;
+    align-self:flex-start;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    padding:5px 10px;
+    border:1px solid rgba(234,241,255,0.35);
+    border-radius:20px;
+    margin-bottom:22px;
+    color:rgba(234,241,255,0.85);
+  }
+
+  .package-name{
+    font-family:'Unbounded',sans-serif;
+    font-weight:700;
+    font-size:22px;
+    margin-bottom:8px;
+  }
+
+  .package-for{
+    font-size:13px;
+    color:rgba(234,241,255,0.6);
+    margin-bottom:24px;
+  }
+
+  .package-list{
+    list-style:none;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    margin-bottom:28px;
+    flex-grow:1;
+  }
+
+  .package-list li{
+    font-size:13.5px;
+    line-height:1.5;
+    color:rgba(234,241,255,0.85);
+    display:flex;
+    gap:10px;
+  }
+
+  .package-list li::before{
+    content:"✓";
+    color:var(--gold);
+    flex-shrink:0;
+    font-weight:700;
+  }
+
+  .package-cta{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:0.04em;
+    text-decoration:none;
+    color:inherit;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding-top:16px;
+    border-top:1px solid rgba(234,241,255,0.18);
+  }
+  .package-cta svg{ width:12px; height:12px; }
+
+  @media (max-width:1080px){
+    .packages-grid{ grid-template-columns:1fr; }
+  }
+
+  /* ============ FAQ ============ */
+  .faq{ background:#f6f5f1; }
+  .faq-grid{
+    display:grid;
+    grid-template-columns:0.7fr 1.3fr;
+    gap:56px;
+  }
+  .faq-title{
+    font-family:'Unbounded',sans-serif;
+    font-weight:800;
+    font-size:clamp(30px,4.4vw,50px);
+    line-height:1.05;
+    letter-spacing:-0.01em;
+    text-transform:uppercase;
+    color:#0b0e1a;
+  }
+  .faq-title .outline{
+    -webkit-text-stroke:1.5px #0b0e1a;
+    color:transparent;
+  }
+  .faq-sub{
+    margin-top:18px;
+    font-size:14px;
+    line-height:1.6;
+    color:#3d4258;
+    max-width:340px;
+  }
+
+  .faq-list{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+  }
+
+  .faq-item{
+    background:#fff;
+    border:2px solid #0b0e1a;
+  }
+  .faq-item + .faq-item{ margin-top:14px; }
+
+  .faq-item summary{
+    list-style:none;
+    cursor:pointer;
+    padding:22px 26px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    font-family:'Unbounded',sans-serif;
+    font-weight:700;
+    font-size:15px;
+    color:#0b0e1a;
+  }
+  .faq-item summary::-webkit-details-marker{ display:none; }
+
+  .faq-plus{
+    font-family:'JetBrains Mono',monospace;
+    font-size:20px;
+    color:#0d1fb8;
+    flex-shrink:0;
+    transition:transform .25s ease;
+  }
+  .faq-item[open] .faq-plus{ transform:rotate(45deg); }
+
+  .faq-answer{
+    padding:0 26px 24px;
+    font-size:14px;
+    line-height:1.65;
+    color:#3d4258;
+    max-width:640px;
+  }
+
+  @media (max-width:900px){
+    .faq-grid{ grid-template-columns:1fr; gap:28px; }
+  }
+
+  /* ============ TRUST STRIP ============ */
+  .trust-strip{ background:#f6f5f1; padding:0 56px 110px; }
+  .trust-grid{
+    max-width:1400px;
+    margin:0 auto;
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:20px;
+  }
+  .trust-card{
+    background:#fff;
+    border:2px solid #0b0e1a;
+    padding:22px 24px;
+    display:flex;
+    align-items:flex-start;
+    gap:14px;
+  }
+  .trust-icon{
+    width:22px;height:22px;
+    flex-shrink:0;
+    margin-top:1px;
+    border-radius:50%;
+    border:2px solid #0d1fb8;
+    color:#0d1fb8;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .trust-icon svg{ width:12px; height:12px; }
+  .trust-text{
+    font-size:14px;
+    font-weight:600;
+    line-height:1.4;
+    color:#0b0e1a;
+  }
+  @media (max-width:1080px){
+    .trust-grid{ grid-template-columns:repeat(2, 1fr); }
+  }
+  @media (max-width:720px){
+    .trust-strip{ padding:0 24px 90px; }
+    .trust-grid{ grid-template-columns:1fr; gap:14px; }
+  }
+
+  /* ============ FOOTER (shortened) ============ */
+  .site-footer{
+    position:relative;
+    width:100%;
+    overflow:hidden;
+    background:#000;
+    color:#eaf3ff;
+    font-family:'Space Grotesk',Arial,sans-serif;
+  }
+  .footer-glow{
+    position:absolute;
+    left:-18%; bottom:-70%;
+    width:136%; height:140%;
+    pointer-events:none;
+    background:
+      radial-gradient(ellipse at 48% 34%,
+        rgba(0,145,255,1) 0%, rgba(0,100,255,.96) 22%,
+        rgba(0,55,205,.82) 43%, rgba(0,20,95,.46) 64%, transparent 79%);
+    filter:blur(48px);
+    transform:rotate(-7deg) scale(1.15);
+  }
+  .site-footer::before{
+    content:"";
+    position:absolute;
+    left:-25%; bottom:-30%;
+    width:150%; height:70%;
+    pointer-events:none;
+    background:radial-gradient(ellipse at center,
+      rgba(0,153,255,.9) 0%, rgba(0,105,255,.62) 34%, transparent 73%);
+    filter:blur(78px);
+  }
+  .site-footer::after{
+    content:"";
+    position:absolute; inset:0;
+    pointer-events:none;
+    background:linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,.04) 35%, rgba(0,0,0,.22) 100%);
+  }
+  .footer-content{
+    position:relative; z-index:5;
+    width:100%;
+    padding:60px 40px 28px;
+    display:flex;
+    flex-direction:column;
+    gap:48px;
+  }
+  .footer-brand{ display:flex; flex-direction:column; align-items:flex-start; }
+  .footer-logo{
+    font-family:'Unbounded','Arial Black',Arial,sans-serif;
+    font-size:clamp(34px,4.4vw,60px);
+    line-height:.86;
+    font-weight:900;
+    letter-spacing:-.09em;
+    color:#e9f5ff;
+    margin-bottom:18px;
+  }
+  .footer-location-row{
+    display:flex; align-items:center; gap:13px;
+    margin-bottom:9px;
+    font-size:15px; font-weight:600;
+    color:rgba(225,238,255,.78);
+  }
+  .footer-arrow{ font-size:19px; margin-left:2px; }
+  .location-pill{
+    display:inline-flex; align-items:center; justify-content:center;
+    height:25px; min-width:38px; padding:0 9px;
+    border:2px solid #008cff; border-radius:50px;
+    color:#008cff; font-size:11px; font-weight:700;
+  }
+  .footer-links{
+    display:grid;
+    grid-template-columns:120px 140px;
+    column-gap:30px;
+  }
+  .footer-nav, .footer-social{ display:flex; flex-direction:column; gap:10px; }
+  .footer-links a{
+    color:rgba(225,232,242,.55);
+    text-decoration:none;
+    font-size:15px; line-height:1.1;
+    transition:color .25s ease,transform .25s ease;
+  }
+  .footer-links a:hover{ color:#fff; transform:translateX(3px); }
+  .footer-social a{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .footer-social a span{ font-size:16px; color:rgba(225,232,242,.65); }
+  .footer-bottom{
+    position:relative; z-index:10;
+    width:100%;
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:center;
+    gap:25px;
+    font-size:12px;
+    color:rgba(225,238,255,.72);
+    border-top:1px solid rgba(225,238,255,.12);
+    padding-top:20px;
+  }
+  .footer-copyright{ text-align:left; }
+  .footer-legal{ display:flex; align-items:center; justify-content:center; gap:24px; }
+  .footer-legal a{ color:rgba(225,238,255,.72); text-decoration:none; white-space:nowrap; transition:color .25s ease; }
+  .footer-legal a:hover{ color:#fff; }
+  .footer-credit{ display:flex; align-items:center; justify-content:flex-end; gap:15px; white-space:nowrap; }
+
+  @media (max-width:900px){
+    .footer-content{ padding:40px 30px 24px; gap:36px; }
+    .footer-links{ grid-template-columns:1fr 1fr; }
+    .footer-bottom{ grid-template-columns:1fr; gap:14px; text-align:center; }
+    .footer-copyright, .footer-credit{ justify-content:center; text-align:center; }
+  }
+  @media (max-width:600px){
+    .footer-content{ padding:32px 22px 22px; gap:30px; }
+    .footer-logo{ font-size:42px; }
+    .footer-location-row{ flex-wrap:wrap; font-size:13px; gap:10px; }
+    .footer-legal{ flex-wrap:wrap; gap:10px 18px; }
+    .footer-credit{ flex-wrap:wrap; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="top-border"></div>
+  <canvas id="streaks"></canvas>
+
+  <nav>
+    <div class="nav-left">
+      <a href="infrahome.html#services" class="nav-item">All Services</a>
+      <a href="infrahome.html#behind-the-scenes" class="nav-item">Portfolio</a>
+    </div>
+    <div class="nav-mark" aria-label="logo">
+      <svg viewBox="0 0 48 32" fill="none">
+        <path d="M24 12.5 C21 6 14 2 2 0 C7 6.5 10 10.5 13.5 14 C8 13.5 3.5 15 0 18.5 C6.5 18 11 19 15.5 21.5 C11.5 22.5 8.5 25 6.5 29 C12 26 17 24.5 22 24.5 L24 32 L26 24.5 C31 24.5 36 26 41.5 29 C39.5 25 36.5 22.5 32.5 21.5 C37 19 41.5 18 48 18.5 C44.5 15 40 13.5 34.5 14 C38 10.5 41 6.5 46 0 C34 2 27 6 24 12.5 Z" fill="#eaf1ff"/>
+      </svg>
+    </div>
+    <div class="nav-right">
+      <a href="infrahome.html#company-about" class="nav-item">About</a>
+      <a href="infrahome.html#contact" class="nav-item active">Contact</a>
+    </div>
+  </nav>
+
+  <div class="hero-inner">
+    <div class="breadcrumb">
+      <a href="infrahome.html">InfraEdge 360</a>
+      <span>/</span>
+      <span>Services</span>
+      <span>/</span>
+      <span style="color:var(--ice);">Events</span>
+    </div>
+
+    <span class="swatch-mark">
+      <span class="swatch-dots"><span></span><span></span><span></span></span>
+      Service line 04 · Events
+    </span>
+
+    <h1 class="hero-title">Events that run<br>exactly as <span class="outline">planned.</span></h1>
+
+    <p class="hero-desc">Launches, activations, and offsites planned end-to-end and executed on the ground by people who've done it before — not a checklist handed to a junior on the day. One point of contact, zero surprises.</p>
+
+    <div class="cta-row">
+      <a href="infrahome.html#contact" class="btn btn-primary">
+        START AN EVENT BRIEF
+        <svg viewBox="0 0 24 24" fill="none" stroke="#0d1fb8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="6" y1="18" x2="18" y2="6"/><polyline points="8 6 18 6 18 16"/>
+        </svg>
+      </a>
+      <a href="#offerings" class="btn btn-outline">SEE WHAT'S INCLUDED</a>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">60+</div><div class="stat-label">Events Executed</div></div>
+      <div class="stat"><div class="stat-num">8k+</div><div class="stat-label">Attendees Hosted</div></div>
+      <div class="stat"><div class="stat-num">0</div><div class="stat-label">Day-Of Surprises We Allow</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="marquee" aria-label="Event service areas">
+  <div class="marquee-track">
+    <div class="marquee-group">
+      <span class="marquee-item">PRODUCT LAUNCHES</span><span class="marquee-dot"></span>
+      <span class="marquee-item">BRAND ACTIVATIONS</span><span class="marquee-dot"></span>
+      <span class="marquee-item">CONFERENCES &amp; SUMMITS</span><span class="marquee-dot"></span>
+      <span class="marquee-item">VENUE &amp; VENDOR SOURCING</span><span class="marquee-dot"></span>
+      <span class="marquee-item">ON-GROUND EXECUTION</span><span class="marquee-dot"></span>
+      <span class="marquee-item">TEAM OFFSITES</span><span class="marquee-dot"></span>
+    </div>
+    <div class="marquee-group" aria-hidden="true">
+      <span class="marquee-item">PRODUCT LAUNCHES</span><span class="marquee-dot"></span>
+      <span class="marquee-item">BRAND ACTIVATIONS</span><span class="marquee-dot"></span>
+      <span class="marquee-item">CONFERENCES &amp; SUMMITS</span><span class="marquee-dot"></span>
+      <span class="marquee-item">VENUE &amp; VENDOR SOURCING</span><span class="marquee-dot"></span>
+      <span class="marquee-item">ON-GROUND EXECUTION</span><span class="marquee-dot"></span>
+      <span class="marquee-item">TEAM OFFSITES</span><span class="marquee-dot"></span>
+    </div>
+  </div>
+</div>
+
+<section class="overview">
+  <div class="section-inner overview-grid">
+    <div>
+      <span class="eyebrow">/01 · Overview</span>
+      <h2 class="overview-title">PLANNING THAT<br>SURVIVES <span class="outline">CONTACT.</span></h2>
+    </div>
+    <div>
+      <p class="overview-desc">Most event failures aren't creative — they're logistical. A vendor no-shows, a timeline slips, nobody owns the run-of-show. We work differently: one team plans it, sources it, and stands on-site to run it.</p>
+      <p class="overview-desc">Every event ships with a full run-of-show, vendor contacts, and a post-event report — so what happened on the day is never a mystery to your team afterward.</p>
+    </div>
+  </div>
+</section>
+
+<section class="offerings" id="offerings">
+  <div class="section-inner">
+    <div class="offerings-head">
+      <span class="eyebrow">/02 · What's included</span>
+      <h2 class="offerings-title">SIX WAYS WE GET<br>YOUR EVENT ON <span class="outline">THE GROUND.</span></h2>
+    </div>
+
+    <div class="offerings-grid">
+
+      <div class="offering-item">
+        <div class="offering-top">
+          <div class="offering-title">Product Launches &amp; Activations</div>
+          <span class="offering-swatch"><span class="dot" style="background:var(--gold);"></span>01</span>
+        </div>
+        <p class="offering-desc">Concept, format, and flow for a launch moment that lands — from a 50-person press preview to a full public activation.</p>
+      </div>
+
+      <div class="offering-item">
+        <div class="offering-top">
+          <div class="offering-title">Conferences &amp; Summits</div>
+          <span class="offering-swatch"><span class="dot" style="background:#5a8bff;"></span>02</span>
+        </div>
+        <p class="offering-desc">Agenda design, speaker logistics, and multi-track scheduling handled so your team can focus on the content, not the clock.</p>
+      </div>
+
+      <div class="offering-item">
+        <div class="offering-top">
+          <div class="offering-title">Venue &amp; Vendor Sourcing</div>
+          <span class="offering-swatch"><span class="dot" style="background:#ff5a7a;"></span>03</span>
+        </div>
+        <p class="offering-desc">Shortlisted venues, catering, AV, and production vendors — vetted, negotiated, and contracted on your behalf.</p>
+      </div>
+
+      <div class="offering-item">
+        <div class="offering-top">
+          <div class="offering-title">On-Ground Execution</div>
+          <span class="offering-swatch"><span class="dot" style="background:var(--gold);"></span>04</span>
+        </div>
+        <p class="offering-desc">A run-of-show and a team physically on-site to run it — check-ins, timelines, and vendors managed live, not remotely.</p>
+      </div>
+
+      <div class="offering-item">
+        <div class="offering-top">
+          <div class="offering-title">Team Offsites &amp; Retreats</div>
+          <span class="offering-swatch"><span class="dot" style="background:#5a8bff;"></span>05</span>
+        </div>
+        <p class="offering-desc">Location, agenda, and logistics for offsites that balance actual work time with the reason people wanted to come.</p>
+      </div>
+
+      <div class="offering-item">
+        <div class="offering-top">
+          <div class="offering-title">Guest Management &amp; Reporting</div>
+          <span class="offering-swatch"><span class="dot" style="background:#ff5a7a;"></span>06</span>
+        </div>
+        <p class="offering-desc">RSVPs, check-in flow, and a post-event report with attendance, spend, and what to change next time.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="process">
+  <div class="section-inner">
+    <div class="process-head">
+      <span class="eyebrow">/03 · How a project runs</span>
+      <h2 class="process-title">From first brief<br>to <span class="outline">wheels-up</span> on the day.</h2>
+    </div>
+
+    <div class="process-grid">
+      <div class="process-card">
+        <div class="process-top">
+          <span class="process-num"><span class="dot" style="background:var(--gold);"></span>Brief</span>
+          <span class="process-line"></span>
+        </div>
+        <div class="process-divider"></div>
+        <div class="process-card-title">Brief</div>
+        <p class="process-card-text">We nail down the goal, headcount, budget, and date before a single venue gets shortlisted.</p>
+      </div>
+
+      <div class="process-card">
+        <div class="process-top">
+          <span class="process-num"><span class="dot" style="background:#5a8bff;"></span>Source</span>
+          <span class="process-line"></span>
+        </div>
+        <div class="process-divider"></div>
+        <div class="process-card-title">Source</div>
+        <p class="process-card-text">Venues, vendors, and production partners shortlisted, negotiated, and locked in against your budget.</p>
+      </div>
+
+      <div class="process-card">
+        <div class="process-top">
+          <span class="process-num"><span class="dot" style="background:#ff5a7a;"></span>Plan</span>
+          <span class="process-line"></span>
+        </div>
+        <div class="process-divider"></div>
+        <div class="process-card-title">Plan</div>
+        <p class="process-card-text">A full run-of-show, timeline, and contingency plan built out and signed off before the day arrives.</p>
+      </div>
+
+      <div class="process-card">
+        <div class="process-top">
+          <span class="process-num"><span class="dot" style="background:var(--gold);"></span>Execute</span>
+          <span class="process-line"></span>
+        </div>
+        <div class="process-divider"></div>
+        <div class="process-card-title">Execute</div>
+        <p class="process-card-text">Our team on-site running the timeline, the vendors, and the problems — then a report once it's done.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="packages">
+  <div class="section-inner">
+    <div class="packages-head">
+      <div>
+        <span class="eyebrow">/04 · Packages</span>
+        <h2 class="packages-title">PICK YOUR<br>SCALE OF <span class="outline">EVENT.</span></h2>
+      </div>
+      <p class="packages-sub">Every tier ships a full run-of-show. If an event needs custom scoping, we say so upfront — never mid-project.</p>
+    </div>
+
+    <div class="packages-grid">
+
+      <div class="package-card tier-a">
+        <span class="package-badge">Single Event</span>
+        <div class="package-name">Launch Day</div>
+        <div class="package-for">For a single, focused event — a launch, a press preview, a milestone celebration.</div>
+        <ul class="package-list">
+          <li>Venue &amp; vendor sourcing</li>
+          <li>Full run-of-show &amp; timeline</li>
+          <li>On-site execution team</li>
+          <li>Delivered in 2–4 weeks</li>
+        </ul>
+        <a href="infrahome.html#contact" class="package-cta">GET STARTED <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="18" x2="18" y2="6"/><polyline points="8 6 18 6 18 16"/></svg></a>
+      </div>
+
+      <div class="package-card tier-b">
+        <span class="package-badge">Most booked</span>
+        <div class="package-name">Full Production</div>
+        <div class="package-for">For multi-day conferences, summits, and larger activations.</div>
+        <ul class="package-list">
+          <li>Agenda &amp; speaker logistics</li>
+          <li>Guest management &amp; check-in</li>
+          <li>Dedicated on-site producer</li>
+          <li>Delivered in 6–10 weeks</li>
+        </ul>
+        <a href="infrahome.html#contact" class="package-cta">GET STARTED <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="18" x2="18" y2="6"/><polyline points="8 6 18 6 18 16"/></svg></a>
+      </div>
+
+      <div class="package-card tier-c">
+        <span class="package-badge">Ongoing</span>
+        <div class="package-name">Events Retainer</div>
+        <div class="package-for">For teams running events every quarter — offsites, meetups, recurring launches.</div>
+        <ul class="package-list">
+          <li>Everything in Full Production</li>
+          <li>Dedicated event lead</li>
+          <li>Standing vendor rates &amp; venues</li>
+          <li>Priority turnaround on requests</li>
+        </ul>
+        <a href="infrahome.html#contact" class="package-cta">TALK TO US <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="18" x2="18" y2="6"/><polyline points="8 6 18 6 18 16"/></svg></a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="faq">
+  <div class="section-inner faq-grid">
+    <div>
+      <span class="eyebrow">/05 · Questions</span>
+      <h2 class="faq-title">BEFORE YOU<br><span class="outline">BOOK US.</span></h2>
+      <p class="faq-sub">Answers to what founders usually ask before planning an event.</p>
+    </div>
+
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary>Do you handle vendor contracts and payments directly?
+          <span class="faq-plus">+</span>
+        </summary>
+        <div class="faq-answer">Yes — we negotiate and contract venues and vendors on your behalf, and manage payments against the budget agreed upfront, so you're not chasing five different invoices.</div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Will your team actually be on-site on the day?
+          <span class="faq-plus">+</span>
+        </summary>
+        <div class="faq-answer">Always. Full Production and the Retainer include a dedicated on-site producer running the timeline live; Launch Day includes an execution team for the full event window.</div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Can you work with a venue or vendor we've already picked?
+          <span class="faq-plus">+</span>
+        </summary>
+        <div class="faq-answer">Yes — a lot of our work is stepping into a partly-planned event rather than starting from zero. We'll audit what's booked before filling in the rest.</div>
+      </details>
+
+      <details class="faq-item">
+        <summary>What happens if something goes wrong on the day?
+          <span class="faq-plus">+</span>
+        </summary>
+        <div class="faq-answer">Every event ships with a contingency plan built in at the planning stage, and our on-site team is authorized to make real-time calls — you're never the first to hear about a problem.</div>
+      </details>
+
+      <details class="faq-item">
+        <summary>What's the typical timeline for a full production?
+          <span class="faq-plus">+</span>
+        </summary>
+        <div class="faq-answer">Six to ten weeks from kickoff to event day, depending on scale and how far out the venue and vendors need to be locked in.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="trust-strip">
+  <div class="trust-grid">
+    <div class="trust-card">
+      <span class="trust-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+      <span class="trust-text">On-site team, not a remote coordinator</span>
+    </div>
+    <div class="trust-card">
+      <span class="trust-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+      <span class="trust-text">Full run-of-show handed over, always</span>
+    </div>
+    <div class="trust-card">
+      <span class="trust-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+      <span class="trust-text">Senior producers, not junior coordinators</span>
+    </div>
+    <div class="trust-card">
+      <span class="trust-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+      <span class="trust-text">Fixed-scope pricing, transparent from day one</span>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer" id="contact">
+  <div class="footer-glow"></div>
+  <div class="footer-content">
+    <div class="footer-brand">
+      <div class="footer-logo">INFRAEDGE 360</div>
+      <div class="footer-location-row">
+        <span>Based in</span>
+        <span class="footer-arrow">→</span>
+        <span class="location-pill">INDIA</span>
+      </div>
+      <div class="footer-location-row"><span>Available Worldwide</span></div>
+    </div>
+
+    <div class="footer-links">
+      <div class="footer-nav">
+        <a href="infrahome.html">Home</a>
+        <a href="infrahome.html#services">Services</a>
+        <a href="infrahome.html#company-about">About us</a>
+        <a href="infrahome.html#contact">Contact</a>
+      </div>
+      <div class="footer-social">
+        <a href="#" target="_blank" rel="noopener">Instagram <span>↗</span></a>
+        <a href="#" target="_blank" rel="noopener">LinkedIn <span>↗</span></a>
+        <a href="mailto:hello@infraedge360.com">Email <span>↗</span></a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="footer-copyright">@ 2026 InfraEdge 360, All Rights Reserved</div>
+      <div class="footer-legal">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Services</a>
+        <a href="#">Cookie Policy</a>
+      </div>
+      <div class="footer-credit">
+        <span>infraedge360©</span>
+        <span>Site by infraedge360</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+const canvas = document.getElementById('streaks');
+const ctx = canvas.getContext('2d');
+let w, h, particles;
+
+function resize(){
+  w = canvas.width = canvas.offsetWidth * devicePixelRatio;
+  h = canvas.height = canvas.offsetHeight * devicePixelRatio;
+}
+
+function makeParticles(n){
+  const arr = [];
+  for(let i=0;i<n;i++){
+    arr.push({
+      x: Math.random()*w,
+      y: Math.random()*h,
+      len: (16 + Math.random()*70) * devicePixelRatio,
+      speed: (0.5 + Math.random()*2) * devicePixelRatio,
+      angle: (-0.5 + Math.random()*0.3),
+      alpha: 0.06 + Math.random()*0.28,
+      width: (0.6 + Math.random()*1.4) * devicePixelRatio
+    });
+  }
+  return arr;
+}
+
+function init(){
+  resize();
+  particles = makeParticles(Math.floor((w*h)/42000));
+}
+
+function draw(){
+  ctx.clearRect(0,0,w,h);
+  ctx.strokeStyle = '#000000';
+  for(const p of particles){
+    ctx.globalAlpha = p.alpha;
+    ctx.lineWidth = p.width;
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y);
+    const ex = p.x + Math.cos(p.angle)*p.len;
+    const ey = p.y + Math.sin(p.angle)*p.len;
+    ctx.lineTo(ex, ey);
+    ctx.stroke();
+
+    p.x += Math.cos(p.angle)*p.speed;
+    p.y += Math.sin(p.angle)*p.speed;
+
+    if(p.x < -100 || p.x > w+100 || p.y < -100 || p.y > h+100){
+      p.x = Math.random()*w;
+      p.y = Math.random()*h;
+    }
+  }
+  ctx.globalAlpha = 1;
+  requestAnimationFrame(draw);
+}
+
+window.addEventListener('resize', init);
+init();
+draw();
+</script>
+
+</body>
+</html>
