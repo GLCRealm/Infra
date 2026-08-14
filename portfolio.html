@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio — InfraEdge 360</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/portfolio.css">
+</head>
+<body>
+
+<div class="hero">
+  <div class="top-border"></div>
+  <canvas id="streaks"></canvas>
+
+    <nav>
+    <div class="nav-left">
+      <a href="index.html#services" class="nav-item" data-nav="services">All Services</a>
+      <a href="portfolio.html" class="nav-item" data-nav="portfolio">Portfolio</a>
+    </div>
+
+    <div class="nav-mark" aria-label="logo">
+      <svg viewBox="0 0 48 32" fill="none">
+        <path d="M24 12.5 C21 6 14 2 2 0 C7 6.5 10 10.5 13.5 14 C8 13.5 3.5 15 0 18.5 C6.5 18 11 19 15.5 21.5 C11.5 22.5 8.5 25 6.5 29 C12 26 17 24.5 22 24.5 L24 32 L26 24.5 C31 24.5 36 26 41.5 29 C39.5 25 36.5 22.5 32.5 21.5 C37 19 41.5 18 48 18.5 C44.5 15 40 13.5 34.5 14 C38 10.5 41 6.5 46 0 C34 2 27 6 24 12.5 Z" fill="#eaf1ff"/>
+      </svg>
+    </div>
+
+    <div class="nav-right">
+      <a href="index.html#company-about" class="nav-item" data-nav="about">About</a>
+      <a href="contact.html" class="nav-item" data-nav="contact">Contact</a>
+    </div>
+  </nav>
+
+  <div class="hero-inner">
+    <div class="breadcrumb">
+      <a href="index.html">InfraEdge 360</a>
+      <span>/</span>
+      <span style="color:var(--ice);">Portfolio</span>
+    </div>
+
+    <span class="portfolio-badge"><span class="rec"></span>Selected work · Live reel</span>
+
+    <h1 class="hero-title">Work worth<br><span class="outline">stopping</span> for.</h1>
+
+    <p class="hero-desc">A running reel of what six service lines actually look like on the ground — shoots, launches, builds, and brand systems, shot and shipped by the same team.</p>
+
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">40+</div><div class="stat-label">Projects Shipped</div></div>
+      <div class="stat"><div class="stat-num">6</div><div class="stat-label">Service Lines</div></div>
+      <div class="stat"><div class="stat-num">12</div><div class="stat-label">Industries</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="filter-bar" id="filterBar">
+  <button class="filter-btn active" data-filter="all">All Work</button>
+  <button class="filter-btn" data-filter="media">Media</button>
+  <button class="filter-btn" data-filter="events">Events</button>
+  <button class="filter-btn" data-filter="creative">Creative</button>
+  <button class="filter-btn" data-filter="web">Web</button>
+  <button class="filter-btn" data-filter="business">Business</button>
+</div>
+
+<section class="gallery-section">
+  <div class="gallery-grid" id="galleryGrid">
+    <!-- Tiles injected by JS from PORTFOLIO_ITEMS -->
+  </div>
+</section>
+
+<section class="cta-strip">
+  <h2 class="cta-strip-title">GOT A PROJECT<br><span class="outline">WORTH</span> SHOOTING?</h2>
+  <p class="cta-strip-sub">Whatever the service line, it ends up looking like this. Let's talk about what we'd build for you.</p>
+  <div class="btn-row">
+    <a href="contact.html" class="btn btn-primary">
+      BOOK A CONSULTATION
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="18" x2="18" y2="6"/><polyline points="8 6 18 6 18 16"/></svg>
+    </a>
+    <a href="index.html#services" class="btn btn-outline-dark">EXPLORE SERVICES</a>
+  </div>
+</section>
+
+<footer class="site-footer" id="contact">
+  <div class="footer-glow"></div>
+  <div class="footer-content">
+
+    <div class="footer-brand">
+      <div class="footer-logo">INFRAEDGE 360</div>
+      <div class="footer-location-row">
+        <span>Based in</span>
+        <span class="footer-arrow">→</span>
+        <span class="location-pill">INDIA</span>
+      </div>
+      <div class="footer-location-row"><span>Available Worldwide</span></div>
+    </div>
+
+    <div class="footer-links">
+      <div class="footer-nav">
+        <a href="index.html">Home</a>
+        <a href="index.html#services">Services</a>
+        <a href="index.html#company-about">About us</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <div class="footer-social">
+        <a href="#" target="_blank" rel="noopener">Instagram <span>↗</span></a>
+        <a href="#" target="_blank" rel="noopener">LinkedIn <span>↗</span></a>
+        <a href="mailto:hello@infraedge360.com">Email <span>↗</span></a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="footer-copyright">@ 2026 InfraEdge 360, All Rights Reserved</div>
+      <div class="footer-legal">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Services</a>
+        <a href="#">Cookie Policy</a>
+      </div>
+      <div class="footer-credit">
+        <span>infraedge360©</span>
+        <span>Site by infraedge360</span>
+      </div>
+    </div>
+
+  </div>
+</footer>
+
+<!-- ============ LIGHTBOX ============ -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-arrow prev" id="lbPrev" aria-label="Previous">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+  <div class="lightbox-stage">
+    <button class="lightbox-close" id="lbClose" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="lightbox-media-wrap" id="lbMediaWrap"></div>
+    <div class="lightbox-caption">
+      <div class="lightbox-cat" id="lbCat"></div>
+      <div class="lightbox-title" id="lbTitle"></div>
+    </div>
+  </div>
+  <button class="lightbox-arrow next" id="lbNext" aria-label="Next">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+  </button>
+</div>
+
+<script src="assets/js/main.js"></script>
+<script src="assets/js/portfolio.js"></script>
+
+</body>
+</html>
